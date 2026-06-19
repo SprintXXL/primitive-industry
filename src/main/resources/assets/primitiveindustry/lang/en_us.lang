@@ -1,0 +1,5 @@
+// Industry Blocks \\
+tile.primitiveindustry.coke_oven_brick.name=Coke Oven Brick
+
+// Factory Controllers \\
+tile.primitiveindustry.coke_oven_controller.name=Coke Oven Controller

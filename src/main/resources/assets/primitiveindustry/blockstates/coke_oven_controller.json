@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "primitiveindustry:coke_oven_controller_off"
+    },
+    "active=true": {
+      "model": "primitiveindustry:coke_oven_controller_on"
+    }
+  }
+}

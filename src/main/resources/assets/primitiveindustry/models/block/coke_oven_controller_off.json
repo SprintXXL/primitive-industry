@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "primitiveindustry:factories/coke_oven_controller_off"
+  }
+}
