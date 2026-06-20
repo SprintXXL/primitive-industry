@@ -1,6 +1,6 @@
 package com.SprintXXL.primitiveindustry;
 
-import com.SprintXXL.primitiveindustry.client.gui.GuiHandler;
+import com.SprintXXL.primitiveindustry.client.GuiHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

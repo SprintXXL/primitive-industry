@@ -1,7 +1,5 @@
-package com.SprintXXL.primitiveindustry.client.gui;
+package com.SprintXXL.primitiveindustry.factory.base;
 
-import com.SprintXXL.primitiveindustry.factory.base.ContainerFactoryBase;
-import com.SprintXXL.primitiveindustry.factory.base.TileEntityFactoryBase;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -11,7 +9,7 @@ import static com.SprintXXL.primitiveindustry.Reference.MODID;
 public class GuiFactoryBase extends GuiContainer {
 
     private static final ResourceLocation TEXTURE =
-            new ResourceLocation(MODID, "textures/gui/factory_dummy.png");
+            new ResourceLocation(MODID, "textures/gui/coke_oven.png");
 
     public GuiFactoryBase(InventoryPlayer playerInventory, TileEntityFactoryBase tile) {
         super(new ContainerFactoryBase(

@@ -1,7 +1,7 @@
 package com.SprintXXL.primitiveindustry.factory.base;
 
 import com.SprintXXL.primitiveindustry.factory.Factory;
-import com.SprintXXL.primitiveindustry.factory.data.SlotData;
+import com.SprintXXL.primitiveindustry.factory.data.slots.SlotData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
