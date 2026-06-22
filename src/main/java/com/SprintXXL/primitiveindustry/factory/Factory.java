@@ -2,23 +2,23 @@ package com.SprintXXL.primitiveindustry.factory;
 
 import com.SprintXXL.primitiveindustry.factory.data.gui.GuiData;
 import com.SprintXXL.primitiveindustry.factory.data.slots.SlotData;
-import com.SprintXXL.primitiveindustry.factory.data.structure.StructureData;
+import com.SprintXXL.primitiveindustry.factory.data.structure.StructureType;
 
 public class Factory {
 
     private final String id;
-    private final StructureData structureData;
+    private final StructureType structureType;
     private final GuiData guiData;
     private final SlotData[] slotData;
 
     public Factory(
             String id,
-            StructureData structureData,
+            StructureType structureType,
             GuiData guiData,
             SlotData[] slotData
     ) {
         this.id = id;
-        this.structureData = structureData;
+        this.structureType = structureType;
         this.guiData = guiData;
         this.slotData = slotData;
     }
@@ -27,8 +27,8 @@ public class Factory {
         return id;
     }
 
-    public StructureData getStructureData() {
-        return structureData;
+    public StructureType getStructureType() {
+        return structureType;
     }
 
     public GuiData getGuiData() {
@@ -41,5 +41,21 @@ public class Factory {
 
     public String getControllerName() {
         return id + "_controller";
+    }
+
+    public String getDisplayName() {
+
+        String[] words = id.split("_");
+
+        StringBuilder result = new StringBuilder();
+
+        for (String word : words) {
+
+            result.append(Character.toUpperCase(word.charAt(0)));
+            result.append(word.substring(1));
+            result.append(" ");
+        }
+
+        return result.toString().trim();
     }
 }

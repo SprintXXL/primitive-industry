@@ -29,8 +29,8 @@ public class ContainerFactoryBase extends Container {
                     new SlotItemHandler(
                             inventory,
                             i,
-                            slot.getX(),
-                            slot.getY()
+                            slot.getX() + slot.getType().getContainerOffsetX(),
+                            slot.getY() + slot.getType().getContainerOffsetY()
                     )
             );
         }

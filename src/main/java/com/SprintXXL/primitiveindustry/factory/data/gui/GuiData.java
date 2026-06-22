@@ -2,19 +2,15 @@ package com.SprintXXL.primitiveindustry.factory.data.gui;
 
 public class GuiData {
 
-    private final ProgressType type;
+    private final ProgressIcon type;
 
     public GuiData(
-            ProgressType type
+            ProgressIcon type
     ) {
         this.type = type;
     }
 
-    public ProgressType getType() {
+    public ProgressIcon getType() {
         return type;
-    }
-
-    public static GuiData gui(ProgressType type) {
-        return new GuiData(type);
     }
 }

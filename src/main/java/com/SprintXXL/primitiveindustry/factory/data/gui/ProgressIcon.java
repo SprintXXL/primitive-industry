@@ -1,6 +1,6 @@
 package com.SprintXXL.primitiveindustry.factory.data.gui;
 
-public enum ProgressType {
+public enum ProgressIcon {
 
     ARROW,
     FLAME

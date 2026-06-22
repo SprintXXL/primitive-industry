@@ -2,6 +2,8 @@ package com.SprintXXL.primitiveindustry.factory.base;
 
 import com.SprintXXL.primitiveindustry.PrimitiveIndustry;
 import com.SprintXXL.primitiveindustry.factory.Factory;
+import com.SprintXXL.primitivemultiblocks.API.MultiblockAPI;
+import com.SprintXXL.primitiverecipeapi.factory.FactoryIDs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -13,9 +15,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import static com.SprintXXL.primitiveindustry.Reference.MODID;
+import static com.SprintXXL.primitiveindustry.factory.data.structure.StructureType.MULTIBLOCK;
+import static com.SprintXXL.primitivemultiblocks.API.MultiblockAPI.isFormationHammer;
 
 public class BlockControllerBase extends Block {
 
@@ -77,17 +82,36 @@ public class BlockControllerBase extends Block {
             float hitY,
             float hitZ
     ) {
-        if (!worldIn.isRemote) {
-            playerIn.openGui(
-                    PrimitiveIndustry.INSTANCE,
-                    0,
-                    worldIn,
-                    pos.getX(),
-                    pos.getY(),
-                    pos.getZ()
-            );
+
+        if (worldIn.isRemote) {
+            return true;
         }
 
+        if (hand != EnumHand.MAIN_HAND) {
+            return true;
+        }
+
+        if (isFormationHammer(playerIn.getHeldItemMainhand())) {
+            return true;
+        }
+
+        if (factory.getStructureType() == MULTIBLOCK) {
+
+            boolean formed = MultiblockAPI.isFormed(worldIn, pos, FactoryIDs.COKE_OVEN);
+
+            if (!formed) {
+                playerIn.sendMessage(new TextComponentString("Multiblock is not formed yet"));
+                return true;
+            }
+        }
+        playerIn.openGui(
+                PrimitiveIndustry.INSTANCE,
+                0,
+                worldIn,
+                pos.getX(),
+                pos.getY(),
+                pos.getZ()
+        );
         return true;
     }
 }
