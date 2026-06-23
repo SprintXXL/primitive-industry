@@ -5,17 +5,28 @@ import com.SprintXXL.primitiveindustry.factory.data.slots.SlotData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class ContainerFactoryBase extends Container {
 
+    private final TileEntityFactoryBase tile;
+
+    private static final int INPUT_SLOT = 0;
+    private static final int OUTPUT_SLOT = 1;
+
     public ContainerFactoryBase(
             InventoryPlayer playerInventory,
             IItemHandler factoryInventory,
-            Factory factory
+            Factory factory,
+            TileEntityFactoryBase tile
     ) {
+
+        this.tile = tile;
+
         addFactorySlots(factoryInventory, factory.getSlotData());
         addPlayerInventory(playerInventory);
     }
@@ -25,14 +36,30 @@ public class ContainerFactoryBase extends Container {
         for (int i = 0; i < slots.length; i++) {
             SlotData slot = slots[i];
 
-            addSlotToContainer(
-                    new SlotItemHandler(
-                            inventory,
-                            i,
-                            slot.getX() + slot.getType().getContainerOffsetX(),
-                            slot.getY() + slot.getType().getContainerOffsetY()
-                    )
-            );
+            if (i == OUTPUT_SLOT) {
+                addSlotToContainer(
+                        new SlotItemHandler(
+                                inventory,
+                                i,
+                                slot.getX() + slot.getType().getContainerOffsetX(),
+                                slot.getY() + slot.getType().getContainerOffsetY()
+                        ) {
+                            @Override
+                            public boolean isItemValid(ItemStack stack) {
+                                return false;
+                            }
+                        }
+                );
+            } else {
+                addSlotToContainer(
+                        new SlotItemHandler(
+                                inventory,
+                                i,
+                                slot.getX() + slot.getType().getContainerOffsetX(),
+                                slot.getY() + slot.getType().getContainerOffsetY()
+                        )
+                );
+            }
         }
     }
 
@@ -71,5 +98,72 @@ public class ContainerFactoryBase extends Container {
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
         return true;
+    }
+
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+
+        for (IContainerListener listener : listeners) {
+            listener.sendWindowProperty(this, 0, tile.getProgress());
+            listener.sendWindowProperty(this, 1, tile.getMaxProgress());
+        }
+    }
+
+    @Override
+    public void updateProgressBar(int id, int data) {
+
+        if (id == 0) {
+            tile.setProgress(data);
+        }
+
+        if (id == 1) {
+            tile.setMaxProgress(data);
+        }
+    }
+
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+
+        ItemStack originalStack;
+        Slot slot = inventorySlots.get(index);
+
+        if (slot == null || !slot.getHasStack()) {
+            return ItemStack.EMPTY;
+        }
+
+        ItemStack stackInSlot = slot.getStack();
+        originalStack = stackInSlot.copy();
+
+        int factorySlotCount = tile.getFactory().getSlotData().length;
+        int playerStart = factorySlotCount;
+        int playerEnd = inventorySlots.size();
+
+        int inputStart = INPUT_SLOT;
+        int inputEnd = INPUT_SLOT + 1;
+
+        if (index < factorySlotCount) {
+            if (!mergeItemStack(stackInSlot, playerStart, playerEnd, true)) {
+                return ItemStack.EMPTY;
+            }
+
+        } else {
+            if (!mergeItemStack(stackInSlot, inputStart, inputEnd, false)) {
+                return ItemStack.EMPTY;
+            }
+        }
+
+        if (stackInSlot.isEmpty()) {
+            slot.putStack(ItemStack.EMPTY);
+        }
+        else {
+            slot.onSlotChanged();
+        }
+        if (stackInSlot.getCount() == originalStack.getCount()) {
+            return ItemStack.EMPTY;
+        }
+        slot.onTake(playerIn, stackInSlot);
+
+        return originalStack;
     }
 }

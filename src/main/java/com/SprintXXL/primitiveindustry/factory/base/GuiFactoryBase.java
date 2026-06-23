@@ -14,7 +14,8 @@ public class GuiFactoryBase extends GuiContainer {
         super(new ContainerFactoryBase(
                 playerInventory,
                 tile.getInventory(),
-                tile.getFactory()
+                tile.getFactory(),
+                tile
         ));
 
         this.tile = tile;
@@ -34,6 +35,19 @@ public class GuiFactoryBase extends GuiContainer {
         int y = (height - ySize) / 2;
 
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+
+        if (tile.getMaxProgress() > 0) {
+            int flameHeight = tile.getProgress() * 14 / tile.getMaxProgress();
+
+            drawTexturedModalRect(
+                    x + 81,
+                    y + 36 + (14 - flameHeight),
+                    176,
+                    14 - flameHeight,
+                    14,
+                    flameHeight
+            );
+        }
     }
 
     @Override
@@ -49,5 +63,15 @@ public class GuiFactoryBase extends GuiContainer {
                 6,
                 4210752
         );
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+
+        this.drawDefaultBackground();
+
+        super.drawScreen(mouseX, mouseY, partialTicks);
+
+        this.renderHoveredToolTip(mouseX, mouseY);
     }
 }

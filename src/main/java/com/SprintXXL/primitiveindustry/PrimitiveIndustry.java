@@ -1,13 +1,14 @@
 package com.SprintXXL.primitiveindustry;
 
 import com.SprintXXL.primitiveindustry.client.GuiHandler;
-import com.SprintXXL.primitiverecipeapi.factory.FactoryRecipe;
-import com.SprintXXL.primitiverecipeapi.factory.FactoryRecipeRegistry;
+import com.SprintXXL.primitiveindustry.factory.base.TileEntityFactoryBase;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,14 +35,11 @@ public class PrimitiveIndustry {
     public void init(FMLInitializationEvent event) {
 
         NetworkRegistry.INSTANCE.registerGuiHandler(PrimitiveIndustry.INSTANCE, new GuiHandler());
+
+        GameRegistry.registerTileEntity(TileEntityFactoryBase.class, new ResourceLocation(MODID, "factory_base"));
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-
-        for (FactoryRecipe recipe : FactoryRecipeRegistry.getAllRecipes()) {
-
-            System.out.println("[Primitive Industry] Factory recipe found: " + recipe.getRecipeID());
-        }
     }
 }
