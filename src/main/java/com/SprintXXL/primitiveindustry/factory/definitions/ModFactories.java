@@ -5,10 +5,9 @@ import com.SprintXXL.primitiveindustry.factory.data.gui.GuiData;
 import com.SprintXXL.primitiveindustry.factory.data.gui.ProgressIcon;
 import com.SprintXXL.primitiverecipeapi.factory.FactoryIDs;
 
-import static com.SprintXXL.primitiveindustry.factory.data.slots.SlotData.slots;
+import static com.SprintXXL.primitiveindustry.factory.data.slots.SlotData.*;
 import static com.SprintXXL.primitiveindustry.factory.data.structure.StructureType.MULTIBLOCK;
 import static com.SprintXXL.primitiveindustry.factory.registry.FactoryRegistry.register;
-import static com.SprintXXL.primitiveindustry.factory.data.slots.SlotData.slot;
 import static com.SprintXXL.primitiveindustry.factory.data.slots.SlotType.*;
 
 public final class ModFactories {
@@ -37,7 +36,7 @@ public final class ModFactories {
                     ),
                     slots(
                             slot(INPUT, 55, 34),
-                            slot(LARGE_OUTPUT, 103, 30)
+                            largeSlot(OUTPUT, 103, 30)
                     )
             );
 }

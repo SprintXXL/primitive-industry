@@ -1,10 +1,11 @@
 package com.SprintXXL.primitiveindustry.factory.base;
 
-import com.SprintXXL.primitiveindustry.PrimitiveIndustry;
 import com.SprintXXL.primitiveindustry.factory.Factory;
 import com.SprintXXL.primitiveindustry.factory.recipe.FactoryRecipeMatcher;
 import com.SprintXXL.primitiveindustry.factory.registry.FactoryRegistry;
+import com.SprintXXL.primitiverecipeapi.api.RecipeResourceResolver;
 import com.SprintXXL.primitiverecipeapi.factory.FactoryRecipe;
+import com.SprintXXL.primitiverecipeapi.factory.FactoryRecipeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -12,15 +13,15 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
     private final ItemStackHandler inventory;
     private String factoryID;
     private FactoryRecipe currentRecipe;
     private String currentRecipeID;
-
-    private static final int INPUT_SLOT = 0;
-    private static final int OUTPUT_SLOT = 1;
 
     private int progress = 0;
     private int maxProgress = 0;
@@ -117,15 +118,26 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
             return;
         }
 
-        if (getFactory() == null) {
+        Factory factory = getFactory();
+
+        if (factory == null) {
             return;
         }
 
-        ItemStack inputStack = inventory.getStackInSlot(INPUT_SLOT);
+        restoreCurrentRecipe();
+
+        List<Integer> inputSlots = factory.getInputSlots();
+        List<Integer> outputSlots = factory.getOutputSlots();
+
+        if (inputSlots.isEmpty() || outputSlots.isEmpty()) {
+            return;
+        }
 
         if (currentRecipe == null) {
 
-            FactoryRecipe recipe = FactoryRecipeMatcher.findMatchingRecipe(factoryID, inputStack);
+            List<ItemStack> inputStacks = getInputStacks(factory);
+
+            FactoryRecipe recipe = FactoryRecipeMatcher.findMatchingRecipe(factoryID, inputStacks);
 
             if (recipe == null) {
                 progress = 0;
@@ -133,7 +145,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
                 return;
             }
 
-            inputStack.shrink(1);
+            consumeInputs(factory, recipe);
 
             currentRecipe = recipe;
             currentRecipeID = recipe.getRecipeID();
@@ -149,7 +161,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
             return;
         }
 
-        ItemStack newOutput = currentRecipe.getBasicFactoryData().getOutput().createStack();
+        ItemStack newOutput = RecipeResourceResolver.createStack(currentRecipe.getBasicFactoryData().getOutputs().get(0));
 
         if (!canFitOutput(newOutput)) {
             progress = maxProgress;
@@ -166,11 +178,19 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
     private boolean canFitOutput(ItemStack newOutput) {
 
-        if (newOutput.isEmpty()) {
+        Factory factory = getFactory();
+
+        if (factory == null) {
             return false;
         }
 
-        ItemStack existingOutput = inventory.getStackInSlot(OUTPUT_SLOT);
+        int outputSlot = factory.getOutputSlots().get(0);
+
+        if (outputSlot < 0) {
+            return false;
+        }
+
+        ItemStack existingOutput = inventory.getStackInSlot(outputSlot);
 
         if (existingOutput.isEmpty()) {
             return true;
@@ -186,7 +206,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
         int maxStackSize = Math.min(
                 existingOutput.getMaxStackSize(),
-                inventory.getSlotLimit(OUTPUT_SLOT)
+                inventory.getSlotLimit(outputSlot)
         );
 
         return existingOutput.getCount() + newOutput.getCount() <= maxStackSize;
@@ -194,13 +214,69 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
     private void insertOutput(ItemStack newOutput) {
 
-        ItemStack existingOutput = inventory.getStackInSlot(OUTPUT_SLOT);
+        Factory factory = getFactory();
+
+        if (factory == null) {
+            return;
+        }
+
+        int outputSlot = factory.getOutputSlots().get(0);
+
+        if (outputSlot < 0) {
+            return;
+        }
+
+        ItemStack existingOutput = inventory.getStackInSlot(outputSlot);
 
         if (existingOutput.isEmpty()) {
-            inventory.setStackInSlot(OUTPUT_SLOT, newOutput);
+            inventory.setStackInSlot(outputSlot, newOutput);
             return;
         }
 
         existingOutput.grow(newOutput.getCount());
+    }
+
+    private Factory getValidFactory() {
+        return getFactory();
+    }
+
+    private List<ItemStack> getInputStacks(Factory factory) {
+
+        List<ItemStack> inputStacks = new ArrayList<>();
+
+        for (int slot : factory.getInputSlots()) {
+            inputStacks.add(inventory.getStackInSlot(slot));
+        }
+
+        return inputStacks;
+    }
+
+    private void consumeInputs(Factory factory, FactoryRecipe recipe) {
+
+        List<Integer> inputSlots = factory.getInputSlots();
+
+        for (int i = 0; i < recipe.getBasicFactoryData().getInputs().size(); i++) {
+
+            int slot = inputSlots.get(i);
+
+            int count = recipe.getBasicFactoryData().getInputs().get(i).getCount();
+
+            inventory.getStackInSlot(slot).shrink(count);
+        }
+    }
+
+    private void restoreCurrentRecipe() {
+
+        if (currentRecipe != null || currentRecipeID == null) {
+            return;
+        }
+
+        currentRecipe = FactoryRecipeRegistry.getRecipe(currentRecipeID);
+
+        if (currentRecipe == null) {
+            currentRecipeID = null;
+            progress = 0;
+            maxProgress = 0;
+        }
     }
 }

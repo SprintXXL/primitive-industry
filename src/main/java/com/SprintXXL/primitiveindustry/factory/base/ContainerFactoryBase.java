@@ -2,6 +2,7 @@ package com.SprintXXL.primitiveindustry.factory.base;
 
 import com.SprintXXL.primitiveindustry.factory.Factory;
 import com.SprintXXL.primitiveindustry.factory.data.slots.SlotData;
+import com.SprintXXL.primitiveindustry.factory.data.slots.SlotType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -14,9 +15,6 @@ import net.minecraftforge.items.SlotItemHandler;
 public class ContainerFactoryBase extends Container {
 
     private final TileEntityFactoryBase tile;
-
-    private static final int INPUT_SLOT = 0;
-    private static final int OUTPUT_SLOT = 1;
 
     public ContainerFactoryBase(
             InventoryPlayer playerInventory,
@@ -36,13 +34,13 @@ public class ContainerFactoryBase extends Container {
         for (int i = 0; i < slots.length; i++) {
             SlotData slot = slots[i];
 
-            if (i == OUTPUT_SLOT) {
+            if (slot.getType() == SlotType.OUTPUT) {
                 addSlotToContainer(
                         new SlotItemHandler(
                                 inventory,
                                 i,
-                                slot.getX() + slot.getType().getContainerOffsetX(),
-                                slot.getY() + slot.getType().getContainerOffsetY()
+                                slot.getX() + slot.getContainerOffsetX(),
+                                slot.getY() + slot.getContainerOffsetY()
                         ) {
                             @Override
                             public boolean isItemValid(ItemStack stack) {
@@ -55,8 +53,8 @@ public class ContainerFactoryBase extends Container {
                         new SlotItemHandler(
                                 inventory,
                                 i,
-                                slot.getX() + slot.getType().getContainerOffsetX(),
-                                slot.getY() + slot.getType().getContainerOffsetY()
+                                slot.getX() + slot.getContainerOffsetX(),
+                                slot.getY() + slot.getContainerOffsetY()
                         )
                 );
             }
@@ -139,8 +137,8 @@ public class ContainerFactoryBase extends Container {
         int playerStart = factorySlotCount;
         int playerEnd = inventorySlots.size();
 
-        int inputStart = INPUT_SLOT;
-        int inputEnd = INPUT_SLOT + 1;
+        int inputStart = tile.getFactory().getInputSlots().get(0);
+        int inputEnd = inputStart + 1;
 
         if (index < factorySlotCount) {
             if (!mergeItemStack(stackInSlot, playerStart, playerEnd, true)) {
