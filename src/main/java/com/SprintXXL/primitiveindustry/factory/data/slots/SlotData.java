@@ -2,55 +2,41 @@ package com.SprintXXL.primitiveindustry.factory.data.slots;
 
 public class SlotData {
 
-    private final SlotType type;
-    private final int x;
-    private final int y;
-    private final int containerOffsetX;
-    private final int containerOffsetY;
+    private final SlotDefinition[] inputSlots;
+    private final SlotDefinition[] outputSlots;
+    private final SlotDefinition[] allSlots;
 
     public SlotData(
-            SlotType type,
-            int x,
-            int y,
-            int containerOffsetX,
-            int containerOffsetY
+            SlotDefinition[] inputSlots,
+            SlotDefinition[] outputSlots
     ) {
-        this.type = type;
-        this.x = x;
-        this.y = y;
-        this.containerOffsetX = containerOffsetX;
-        this.containerOffsetY = containerOffsetY;
+        this.inputSlots = inputSlots;
+        this.outputSlots = outputSlots;
+        this.allSlots = mergeSlots(inputSlots, outputSlots);
     }
 
-    public SlotType getType() {
-        return type;
+    public SlotDefinition[] getInputSlots() {
+        return inputSlots;
     }
 
-    public int getX() {
-        return x;
+    public SlotDefinition[] getOutputSlots() {
+        return outputSlots;
     }
 
-    public int getY() {
-        return y;
+    public SlotDefinition[] getAllSlots() {
+        return allSlots;
     }
 
-    public int getContainerOffsetX() {
-        return containerOffsetX;
-    }
+    private static SlotDefinition[] mergeSlots(
+            SlotDefinition[] inputSlots,
+            SlotDefinition[] outputSlots
+    ) {
 
-    public int getContainerOffsetY() {
-        return containerOffsetY;
-    }
+        SlotDefinition[] result = new SlotDefinition[inputSlots.length + outputSlots.length];
 
-    public static SlotData slot(SlotType type, int x, int y) {
-        return new SlotData(type, x, y, 1, 1);
-    }
+        System.arraycopy(inputSlots, 0, result, 0, inputSlots.length);
+        System.arraycopy(outputSlots, 0, result, inputSlots.length, outputSlots.length);
 
-    public static SlotData largeSlot(SlotType type, int x, int y) {
-        return new SlotData(type, x, y, 5, 5);
-    }
-
-    public static SlotData[] slots(SlotData... data) {
-        return data;
+        return result;
     }
 }

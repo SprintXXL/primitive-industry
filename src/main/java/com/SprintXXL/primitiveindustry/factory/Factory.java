@@ -13,19 +13,19 @@ public class Factory {
 
     private final String id;
     private final StructureType structureType;
+    private final SlotData slotData;
     private final GuiData guiData;
-    private final SlotData[] slotData;
 
     public Factory(
             String id,
             StructureType structureType,
-            GuiData guiData,
-            SlotData[] slotData
+            SlotData slotData,
+            GuiData guiData
     ) {
         this.id = id;
         this.structureType = structureType;
-        this.guiData = guiData;
         this.slotData = slotData;
+        this.guiData = guiData;
     }
 
     public String getID() {
@@ -36,12 +36,12 @@ public class Factory {
         return structureType;
     }
 
-    public GuiData getGuiData() {
-        return guiData;
+    public SlotData getSlotData() {
+        return slotData;
     }
 
-    public SlotData[] getSlotData() {
-        return slotData;
+    public GuiData getGuiData() {
+        return guiData;
     }
 
     public String getControllerName() {
@@ -76,8 +76,8 @@ public class Factory {
 
         List<Integer> slots = new ArrayList<>();
 
-        for (int i = 0; i < slotData.length; i++) {
-            if (slotData[i].getType() == type) {
+        for (int i = 0; i < slotData.getAllSlots().length; i++) {
+            if (slotData.getAllSlots()[i].getType() == type) {
                 slots.add(i);
             }
         }

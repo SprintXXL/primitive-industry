@@ -34,7 +34,16 @@ public class GuiFactoryBase extends GuiContainer {
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
 
-        drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+        drawTexturedModalRect(x, y, 40, 45, xSize, ySize);
+
+        drawTexturedModalRect(
+                x + 6,
+                y - 14,
+                46,
+                31,
+                78, // CHANGE TO GENERIC headerWidth
+                14
+        );
 
         if (tile.getMaxProgress() > 0) {
             int flameHeight = tile.getProgress() * 14 / tile.getMaxProgress();
@@ -42,27 +51,12 @@ public class GuiFactoryBase extends GuiContainer {
             drawTexturedModalRect(
                     x + 81,
                     y + 36 + (14 - flameHeight),
-                    176,
-                    14 - flameHeight,
+                    216,
+                    45 + (14 - flameHeight),
                     14,
                     flameHeight
             );
         }
-    }
-
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-
-        String title = tile.getFactory().getDisplayName();
-
-        int centeredX = (170 - (fontRenderer.getStringWidth(title))) / 2;
-
-        fontRenderer.drawString(
-                title,
-                centeredX,
-                6,
-                4210752
-        );
     }
 
     @Override

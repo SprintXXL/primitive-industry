@@ -1,7 +1,8 @@
 package com.SprintXXL.primitiveindustry.factory.base;
 
 import com.SprintXXL.primitiveindustry.factory.Factory;
-import com.SprintXXL.primitiveindustry.factory.data.slots.SlotData;
+import com.SprintXXL.primitiveindustry.factory.data.gui.slots.GuiSlotDefinition;
+import com.SprintXXL.primitiveindustry.factory.data.slots.SlotDefinition;
 import com.SprintXXL.primitiveindustry.factory.data.slots.SlotType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,6 +12,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+
+import java.util.List;
 
 public class ContainerFactoryBase extends Container {
 
@@ -25,22 +28,26 @@ public class ContainerFactoryBase extends Container {
 
         this.tile = tile;
 
-        addFactorySlots(factoryInventory, factory.getSlotData());
+        SlotDefinition[] slots = factory.getSlotData().getAllSlots();
+        GuiSlotDefinition[] guiSlots = factory.getGuiData().getGuiSlotData().getAllGuiSlots();
+
+        addFactorySlots(factoryInventory, slots, guiSlots);
         addPlayerInventory(playerInventory);
     }
 
-    private void addFactorySlots(IItemHandler inventory, SlotData[] slots) {
+    private void addFactorySlots(IItemHandler inventory, SlotDefinition[] slots, GuiSlotDefinition[] guiSlots) {
 
         for (int i = 0; i < slots.length; i++) {
-            SlotData slot = slots[i];
+            SlotDefinition slot = slots[i];
+            GuiSlotDefinition guiSlot = guiSlots[i];
 
             if (slot.getType() == SlotType.OUTPUT) {
                 addSlotToContainer(
                         new SlotItemHandler(
                                 inventory,
                                 i,
-                                slot.getX() + slot.getContainerOffsetX(),
-                                slot.getY() + slot.getContainerOffsetY()
+                                guiSlot.getX() + guiSlot.getContainerOffsetX(),
+                                guiSlot.getY() + guiSlot.getContainerOffsetY()
                         ) {
                             @Override
                             public boolean isItemValid(ItemStack stack) {
@@ -53,8 +60,8 @@ public class ContainerFactoryBase extends Container {
                         new SlotItemHandler(
                                 inventory,
                                 i,
-                                slot.getX() + slot.getContainerOffsetX(),
-                                slot.getY() + slot.getContainerOffsetY()
+                                guiSlot.getX() + guiSlot.getContainerOffsetX(),
+                                guiSlot.getY() + guiSlot.getContainerOffsetY()
                         )
                 );
             }
@@ -133,12 +140,14 @@ public class ContainerFactoryBase extends Container {
         ItemStack stackInSlot = slot.getStack();
         originalStack = stackInSlot.copy();
 
-        int factorySlotCount = tile.getFactory().getSlotData().length;
+        int factorySlotCount = tile.getFactory().getSlotData().getAllSlots().length;
         int playerStart = factorySlotCount;
         int playerEnd = inventorySlots.size();
 
-        int inputStart = tile.getFactory().getInputSlots().get(0);
-        int inputEnd = inputStart + 1;
+        List<Integer> inputs = tile.getFactory().getInputSlots();
+
+        int inputStart = inputs.get(0);
+        int inputEnd = inputStart + inputs.size();
 
         if (index < factorySlotCount) {
             if (!mergeItemStack(stackInSlot, playerStart, playerEnd, true)) {
