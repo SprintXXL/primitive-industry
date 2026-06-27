@@ -70,8 +70,8 @@ public class ContainerFactoryBase extends Container {
 
     private void addPlayerInventory(InventoryPlayer playerInventory) {
 
-        int startX = 8;
-        int startY = 84;
+        int startX = 48;
+        int startY = 129;
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
@@ -86,7 +86,7 @@ public class ContainerFactoryBase extends Container {
             }
         }
 
-        int hotbarY = 142;
+        int hotbarY = 187;
 
         for (int col = 0; col < 9; col++) {
             addSlotToContainer(

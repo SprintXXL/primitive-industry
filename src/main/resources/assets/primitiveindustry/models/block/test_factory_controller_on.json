@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "primitiveindustry:factories/test_factory_controller_on"
+  }
+}

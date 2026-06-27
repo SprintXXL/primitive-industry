@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "primitiveindustry:test_factory_controller_off"
+    },
+    "active=true": {
+      "model": "primitiveindustry:test_factory_controller_on"
+    }
+  }
+}

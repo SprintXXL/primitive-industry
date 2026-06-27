@@ -2,4 +2,5 @@
 tile.primitiveindustry.coke_oven_brick.name=Coke Oven Brick
 
 // Factory Controllers \\
+tile.primitiveindustry.test_factory_controller.name=Test Factory Controller
 tile.primitiveindustry.coke_oven_controller.name=Coke Oven Controller

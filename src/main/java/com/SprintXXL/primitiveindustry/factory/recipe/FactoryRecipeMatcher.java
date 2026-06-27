@@ -3,7 +3,7 @@ package com.SprintXXL.primitiveindustry.factory.recipe;
 import com.SprintXXL.primitiverecipeapi.api.RecipeResourceMatcher;
 import com.SprintXXL.primitiverecipeapi.factory.FactoryRecipe;
 import com.SprintXXL.primitiverecipeapi.factory.FactoryRecipeRegistry;
-import com.SprintXXL.primitiverecipeapi.factory.data.BasicFactoryData;
+import com.SprintXXL.primitiverecipeapi.resources.recipe.RecipeResource;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -55,14 +55,12 @@ public class FactoryRecipeMatcher {
             return false;
         }
 
-        BasicFactoryData data = recipe.getBasicFactoryData();
-
-        if (data.getInputs().size() != inputStacks.size()) {
+        if (recipe.getInputs().size() > inputStacks.size()) {
             return false;
         }
 
-        for (int i = 0; i < data.getInputs().size(); i++) {
-            if (!RecipeResourceMatcher.matches(data.getInputs().get(i), inputStacks.get(i))) {
+        for (int i = 0; i < recipe.getInputs().size(); i++) {
+            if (!RecipeResourceMatcher.matches(recipe.getInputs().get(i), inputStacks.get(i))) {
                 return false;
             }
         }
@@ -71,8 +69,69 @@ public class FactoryRecipeMatcher {
     }
 
     private static boolean matchesPooledInputs(FactoryRecipe recipe, List<ItemStack> inputStacks) {
-        return false;
+
+        for (RecipeResource input : recipe.getInputs()) {
+
+            int found = 0;
+
+            if (input.hasInputSlotOverride()) {
+
+                int slotIndex = input.getInputSlotOverride() - 1;
+
+                if (slotIndex < 0 || slotIndex >= inputStacks.size()) {
+                    return false;
+                }
+
+                ItemStack stack = inputStacks.get(slotIndex);
+
+                if (!RecipeResourceMatcher.matches(input, stack)) {
+                    return false;
+                }
+
+                if (stack.getCount() < input.getCount()) {
+                    return false;
+                }
+
+                continue;
+            }
+
+            for (ItemStack stack : inputStacks) {
+
+                if (RecipeResourceMatcher.matches(input, stack)) {
+                    found += stack.getCount();
+                }
+
+                if (found >= input.getCount()) {
+                    break;
+                }
+            }
+
+            if (found < input.getCount()) {
+                return false;
+            }
+        }
+
+        return true;
     }
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,6 @@
 package com.SprintXXL.primitiveindustry.factory.base;
 
+import com.SprintXXL.primitiveindustry.factory.data.gui.icons.GuiIconDefinition;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -9,6 +10,9 @@ import static com.SprintXXL.primitiveindustry.Reference.MODID;
 public class GuiFactoryBase extends GuiContainer {
 
     private final TileEntityFactoryBase tile;
+
+    private static final int TEXTURE_WIDTH = 288;
+    private static final int TEXTURE_HEIGHT = 256;
 
     public GuiFactoryBase(InventoryPlayer playerInventory, TileEntityFactoryBase tile) {
         super(new ContainerFactoryBase(
@@ -20,8 +24,8 @@ public class GuiFactoryBase extends GuiContainer {
 
         this.tile = tile;
 
-        this.xSize = 176;
-        this.ySize = 166;
+        this.xSize = 256;
+        this.ySize = 256;
     }
 
     @Override
@@ -34,28 +38,17 @@ public class GuiFactoryBase extends GuiContainer {
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
 
-        drawTexturedModalRect(x, y, 40, 45, xSize, ySize);
+        drawModalRectWithCustomSizedTexture(x, y, 0, 0, xSize, ySize, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
-        drawTexturedModalRect(
-                x + 6,
-                y - 14,
-                46,
-                31,
-                78, // CHANGE TO GENERIC headerWidth
-                14
-        );
+        if (tile.getMaxProgress() <= 0) {
+            return;
+        }
 
-        if (tile.getMaxProgress() > 0) {
-            int flameHeight = tile.getProgress() * 14 / tile.getMaxProgress();
+        int progress = tile.getProgress();
+        int maxProgress = tile.getMaxProgress();
 
-            drawTexturedModalRect(
-                    x + 81,
-                    y + 36 + (14 - flameHeight),
-                    216,
-                    45 + (14 - flameHeight),
-                    14,
-                    flameHeight
-            );
+        for (GuiIconDefinition icon : tile.getFactory().getGuiData().getGuiIconData().getGuiIcons()) {
+            renderProgressIcon(icon, progress, maxProgress);
         }
     }
 
@@ -67,5 +60,75 @@ public class GuiFactoryBase extends GuiContainer {
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
+    private void renderProgressIcon(GuiIconDefinition icon, int progress, int maxProgress) {
+
+        switch (icon.getIcon()) {
+
+            case ARROW:
+                renderHorizontalProgress(icon, progress, maxProgress);
+                break;
+
+            case FLAME:
+                renderVerticalProgress(icon, progress, maxProgress);
+                break;
+        }
+    }
+
+    private void renderHorizontalProgress(GuiIconDefinition icon, int progress, int maxProgress) {
+
+        if (maxProgress <= 0) {
+            return;
+        }
+
+        int iconWidth = icon.getWidth();
+        int progressWidth = progress * iconWidth / maxProgress;
+
+        if (progressWidth < 2) {
+            return;
+        }
+
+        drawModalRectWithCustomSizedTexture(
+                guiLeft + icon.getVisibleX(),
+                guiTop + icon.getVisibleY(),
+
+                icon.getHiddenX(),
+                icon.getHiddenY(),
+
+                progressWidth,
+                icon.getHeight(),
+
+                TEXTURE_WIDTH,
+                TEXTURE_HEIGHT
+        );
+    }
+
+    private void renderVerticalProgress(GuiIconDefinition icon, int progress, int maxProgress) {
+
+        if (maxProgress <= 0) {
+            return;
+        }
+
+        int iconHeight = icon.getHeight();
+        int progressHeight = progress * iconHeight / maxProgress;
+
+        if (progressHeight < 2) {
+            return;
+        }
+
+        drawModalRectWithCustomSizedTexture(
+                guiLeft + icon.getVisibleX(),
+                guiTop + icon.getVisibleY() + (iconHeight - progressHeight),
+
+                icon.getHiddenX(),
+                icon.getHiddenY() + (iconHeight - progressHeight),
+
+                icon.getWidth(),
+                progressHeight,
+
+                TEXTURE_WIDTH,
+                TEXTURE_HEIGHT
+        );
     }
 }

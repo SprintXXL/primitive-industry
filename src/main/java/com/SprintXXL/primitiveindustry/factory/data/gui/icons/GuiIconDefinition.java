@@ -42,6 +42,14 @@ public class GuiIconDefinition {
         return hiddenY;
     }
 
+    public int getWidth() {
+        return icon.getWidth();
+    }
+
+    public int getHeight() {
+        return icon.getHeight();
+    }
+
 
     public static GuiIconDefinition icon(ProgressIcon icon, int visibleX, int visibleY, int hiddenX, int hiddenY) {
         return new GuiIconDefinition(icon, visibleX, visibleY, hiddenX, hiddenY);

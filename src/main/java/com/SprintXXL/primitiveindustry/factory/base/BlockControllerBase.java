@@ -3,7 +3,6 @@ package com.SprintXXL.primitiveindustry.factory.base;
 import com.SprintXXL.primitiveindustry.PrimitiveIndustry;
 import com.SprintXXL.primitiveindustry.factory.Factory;
 import com.SprintXXL.primitivemultiblocks.API.MultiblockAPI;
-import com.SprintXXL.primitiverecipeapi.factory.FactoryIDs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -97,7 +96,7 @@ public class BlockControllerBase extends Block {
 
         if (factory.getStructureType() == MULTIBLOCK) {
 
-            boolean formed = MultiblockAPI.isFormed(worldIn, pos, FactoryIDs.COKE_OVEN);
+            boolean formed = MultiblockAPI.isFormed(worldIn, pos, factory.getID());
 
             if (!formed) {
                 playerIn.sendMessage(new TextComponentString("Multiblock is not formed yet"));
