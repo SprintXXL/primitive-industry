@@ -1,6 +1,5 @@
 package com.SprintXXL.primitiveindustry.client;
 
-import com.SprintXXL.primitiveindustry.PrimitiveIndustry;
 import com.SprintXXL.primitiveindustry.factory.base.GuiFactoryBase;
 import com.SprintXXL.primitiveindustry.factory.base.ContainerFactoryBase;
 import com.SprintXXL.primitiveindustry.factory.base.TileEntityFactoryBase;
