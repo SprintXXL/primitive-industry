@@ -6,7 +6,7 @@ import net.minecraft.block.Block;
 
 import java.util.*;
 
-import static com.SprintXXL.primitiveindustry.factory.definitions.ModFactories.initFactoryDefinitions;
+import static com.SprintXXL.primitiveindustry.factory.definitions.ModFactories.registerFactoryDefinitions;
 
 public class FactoryRegistry {
 
@@ -14,7 +14,7 @@ public class FactoryRegistry {
 
     private static boolean initialized = false;
 
-    public static void initFactories() {
+    public static void initFactoryRegistry() {
 
         if (initialized) {
             return;
@@ -22,7 +22,7 @@ public class FactoryRegistry {
 
         initialized = true;
 
-        initFactoryDefinitions();
+        registerFactoryDefinitions(FactoryRegistry::register);
         createBlocks();
     }
 
@@ -39,6 +39,11 @@ public class FactoryRegistry {
     }
 
     public static void register(Factory factory) {
+
+        if (FACTORIES.containsKey(factory.getID())) {
+            throw new IllegalArgumentException("Factory already registered: " + factory.getID());
+        }
+
         ALL_FACTORIES.add(factory);
         FACTORIES.put(factory.getID(), factory);
     }

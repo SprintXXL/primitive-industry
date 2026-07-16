@@ -1,6 +1,6 @@
 package com.SprintXXL.primitiveindustry.factory.base;
 
-import com.SprintXXL.primitiveindustry.factory.data.gui.icons.GuiIconDefinition;
+import com.sprintxxl.ascenthub.framework.gui.icons.IconDefinition;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -47,7 +47,7 @@ public class GuiFactoryBase extends GuiContainer {
         int progress = tile.getProgress();
         int maxProgress = tile.getMaxProgress();
 
-        for (GuiIconDefinition icon : tile.getFactory().getGuiData().getGuiIconData().getGuiIcons()) {
+        for (IconDefinition icon : tile.getFactory().getGui().getIconData().getAllIcons()) {
             renderProgressIcon(icon, progress, maxProgress);
         }
     }
@@ -62,7 +62,7 @@ public class GuiFactoryBase extends GuiContainer {
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 
-    private void renderProgressIcon(GuiIconDefinition icon, int progress, int maxProgress) {
+    private void renderProgressIcon(IconDefinition icon, int progress, int maxProgress) {
 
         switch (icon.getIcon()) {
 
@@ -76,7 +76,7 @@ public class GuiFactoryBase extends GuiContainer {
         }
     }
 
-    private void renderHorizontalProgress(GuiIconDefinition icon, int progress, int maxProgress) {
+    private void renderHorizontalProgress(IconDefinition icon, int progress, int maxProgress) {
 
         if (maxProgress <= 0) {
             return;
@@ -104,7 +104,7 @@ public class GuiFactoryBase extends GuiContainer {
         );
     }
 
-    private void renderVerticalProgress(GuiIconDefinition icon, int progress, int maxProgress) {
+    private void renderVerticalProgress(IconDefinition icon, int progress, int maxProgress) {
 
         if (maxProgress <= 0) {
             return;

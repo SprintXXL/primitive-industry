@@ -21,6 +21,9 @@ import net.minecraftforge.items.ItemStackHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sprintxxl.ascenthub.framework.gui.slots.SlotType.INPUT;
+import static com.sprintxxl.ascenthub.framework.gui.slots.SlotType.OUTPUT;
+
 public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
     private ItemStackHandler inventory;
@@ -55,7 +58,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
         this.factoryID = factory.getID();
 
-        int slotCount = factory.getSlotData().getAllSlots().length;
+        int slotCount = factory.getGui().getSlotData().getSlotCount();
 
         if (inventory.getSlots() != slotCount) {
             this.inventory = new ItemStackHandler(slotCount);
@@ -124,7 +127,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
         if (factory != null) {
 
-            int slotCount = factory.getSlotData().getAllSlots().length;
+            int slotCount = factory.getGui().getSlotData().getSlotCount();
 
             if (inventory.getSlots() != slotCount) {
                 this.inventory = new ItemStackHandler(slotCount);
@@ -158,8 +161,8 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
         restoreCurrentRecipe();
 
-        List<Integer> inputSlots = factory.getInputSlots();
-        List<Integer> outputSlots = factory.getOutputSlots();
+        List<Integer> inputSlots = factory.getGui().getSlotData().getSlotIndices(INPUT);
+        List<Integer> outputSlots = factory.getGui().getSlotData().getSlotIndices(OUTPUT);
 
         if (inputSlots.isEmpty() || outputSlots.isEmpty()) {
             return;
@@ -294,7 +297,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
         List<ItemStack> inputStacks = new ArrayList<>();
 
-        for (int slot : factory.getInputSlots()) {
+        for (int slot : factory.getGui().getSlotData().getSlotIndices(INPUT)) {
             inputStacks.add(inventory.getStackInSlot(slot));
         }
 
@@ -329,7 +332,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
     private void consumePooledInputs(Factory factory, FactoryRecipe recipe) {
 
-        List<Integer> inputSlots = factory.getInputSlots();
+        List<Integer> inputSlots = factory.getGui().getSlotData().getSlotIndices(INPUT);
 
         for (RecipeResource input : recipe.getInputs()) {
 
@@ -430,7 +433,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
     private int getInputSlotFor(Factory factory, RecipeResource input, int inputIndex) {
 
-        List<Integer> inputSlots = factory.getInputSlots();
+        List<Integer> inputSlots = factory.getGui().getSlotData().getSlotIndices(INPUT);
 
         int factoryInputIndex = inputIndex;
 
@@ -447,7 +450,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
 
     private int getOutputSlotFor(Factory factory, RecipeResource output, int outputIndex) {
 
-        List<Integer> outputSlots = factory.getOutputSlots();
+        List<Integer> outputSlots = factory.getGui().getSlotData().getSlotIndices(OUTPUT);
 
         int factoryOutputIndex = outputIndex;
 

@@ -1,33 +1,26 @@
 package com.SprintXXL.primitiveindustry.factory;
 
-import com.SprintXXL.primitiveindustry.factory.data.gui.GuiData;
-import com.SprintXXL.primitiveindustry.factory.data.slots.SlotData;
-import com.SprintXXL.primitiveindustry.factory.data.slots.SlotType;
 import com.SprintXXL.primitiveindustry.factory.data.structure.StructureType;
+import com.sprintxxl.ascenthub.definitions.AscentDefinition;
+import com.sprintxxl.ascenthub.framework.gui.AscentGUI;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class Factory {
+public class Factory implements AscentDefinition {
 
     private final String id;
     private final StructureType structureType;
-    private final SlotData slotData;
-    private final GuiData guiData;
+    private final AscentGUI gui;
 
     public Factory(
             String id,
             StructureType structureType,
-            SlotData slotData,
-            GuiData guiData
+            AscentGUI gui
     ) {
         this.id = id;
         this.structureType = structureType;
-        this.slotData = slotData;
-        this.guiData = guiData;
+        this.gui = gui;
     }
 
+    @Override
     public String getID() {
         return id;
     }
@@ -36,12 +29,8 @@ public class Factory {
         return structureType;
     }
 
-    public SlotData getSlotData() {
-        return slotData;
-    }
-
-    public GuiData getGuiData() {
-        return guiData;
+    public AscentGUI getGui() {
+        return gui;
     }
 
     public String getControllerName() {
@@ -62,26 +51,5 @@ public class Factory {
         }
 
         return result.toString().trim();
-    }
-
-    public List<Integer> getInputSlots() {
-        return getSlotsOfType(SlotType.INPUT);
-    }
-
-    public List<Integer> getOutputSlots() {
-        return getSlotsOfType(SlotType.OUTPUT);
-    }
-
-    private List<Integer> getSlotsOfType(SlotType type) {
-
-        List<Integer> slots = new ArrayList<>();
-
-        for (int i = 0; i < slotData.getAllSlots().length; i++) {
-            if (slotData.getAllSlots()[i].getType() == type) {
-                slots.add(i);
-            }
-        }
-
-        return Collections.unmodifiableList(slots);
     }
 }

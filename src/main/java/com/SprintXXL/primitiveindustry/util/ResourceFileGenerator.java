@@ -11,15 +11,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.SprintXXL.primitiveindustry.factory.definitions.ModFactories.initFactoryDefinitions;
-import static com.SprintXXL.primitiveindustry.industryblocks.definitions.ModIndustryBlocks.initIndustryBlockDefinitions;
+import static com.SprintXXL.primitiveindustry.factory.registry.FactoryRegistry.initFactoryRegistry;
+import static com.SprintXXL.primitiveindustry.industryblocks.registry.IndustryBlockRegistry.initIndustryBlockRegistry;
 
 public class ResourceFileGenerator {
 
     static void main() {
 
-        initIndustryBlockDefinitions();
-        initFactoryDefinitions();
+        initIndustryBlockRegistry();
+        initFactoryRegistry();
 
         for (IndustryBlock industryBlock : IndustryBlockRegistry.getAllIndustryBlocks()) {
             generateIndustryBlock(industryBlock);

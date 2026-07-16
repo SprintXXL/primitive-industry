@@ -6,7 +6,7 @@ import net.minecraft.block.Block;
 
 import java.util.*;
 
-import static com.SprintXXL.primitiveindustry.industryblocks.definitions.ModIndustryBlocks.initIndustryBlockDefinitions;
+import static com.SprintXXL.primitiveindustry.industryblocks.definitions.ModIndustryBlocks.registerIndustryBlockDefinitions;
 
 public class IndustryBlockRegistry {
 
@@ -14,7 +14,7 @@ public class IndustryBlockRegistry {
 
     private static boolean initialized = false;
 
-    public static void initIndustryBlocks() {
+    public static void initIndustryBlockRegistry() {
 
         if (initialized) {
             return;
@@ -22,7 +22,7 @@ public class IndustryBlockRegistry {
 
         initialized = true;
 
-        initIndustryBlockDefinitions();
+        registerIndustryBlockDefinitions(IndustryBlockRegistry::register);
         createBlocks();
     }
 

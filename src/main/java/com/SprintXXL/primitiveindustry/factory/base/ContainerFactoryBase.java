@@ -1,9 +1,8 @@
 package com.SprintXXL.primitiveindustry.factory.base;
 
 import com.SprintXXL.primitiveindustry.factory.Factory;
-import com.SprintXXL.primitiveindustry.factory.data.gui.slots.GuiSlotDefinition;
-import com.SprintXXL.primitiveindustry.factory.data.slots.SlotDefinition;
-import com.SprintXXL.primitiveindustry.factory.data.slots.SlotType;
+import com.sprintxxl.ascenthub.framework.gui.slots.SlotDefinition;
+import com.sprintxxl.ascenthub.framework.gui.slots.SlotGroup;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -14,6 +13,9 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import java.util.List;
+
+import static com.sprintxxl.ascenthub.framework.gui.slots.SlotType.INPUT;
+import static com.sprintxxl.ascenthub.framework.gui.slots.SlotType.OUTPUT;
 
 public class ContainerFactoryBase extends Container {
 
@@ -28,44 +30,51 @@ public class ContainerFactoryBase extends Container {
 
         this.tile = tile;
 
-        SlotDefinition[] slots = factory.getSlotData().getAllSlots();
-        GuiSlotDefinition[] guiSlots = factory.getGuiData().getGuiSlotData().getAllGuiSlots();
-
-        addFactorySlots(factoryInventory, slots, guiSlots);
+        addFactorySlots(factoryInventory, factory);
         addPlayerInventory(playerInventory);
     }
 
-    private void addFactorySlots(IItemHandler inventory, SlotDefinition[] slots, GuiSlotDefinition[] guiSlots) {
+    private void addFactorySlots(IItemHandler inventory, Factory factory) {
 
-        for (int i = 0; i < slots.length; i++) {
-            SlotDefinition slot = slots[i];
-            GuiSlotDefinition guiSlot = guiSlots[i];
+        int inventoryIndex = 0;
 
-            if (slot.getType() == SlotType.OUTPUT) {
-                addSlotToContainer(
-                        new SlotItemHandler(
-                                inventory,
-                                i,
-                                guiSlot.getX() + guiSlot.getContainerOffsetX(),
-                                guiSlot.getY() + guiSlot.getContainerOffsetY()
-                        ) {
-                            @Override
-                            public boolean isItemValid(ItemStack stack) {
-                                return false;
-                            }
-                        }
-                );
-            } else {
-                addSlotToContainer(
-                        new SlotItemHandler(
-                                inventory,
-                                i,
-                                guiSlot.getX() + guiSlot.getContainerOffsetX(),
-                                guiSlot.getY() + guiSlot.getContainerOffsetY()
-                        )
-                );
+        for (SlotGroup group : factory.getGui().getSlotData().getSlotGroups()) {
+
+            for (SlotDefinition slot : group.getSlots()) {
+
+                if (group.getType() == OUTPUT) {
+                    addOutputSlot(inventory, inventoryIndex, slot);
+                } else {
+                    addNormalSlot(inventory, inventoryIndex, slot);
+                }
+
+                inventoryIndex++;
             }
         }
+    }
+
+    private void addOutputSlot(IItemHandler inventory, int inventoryIndex, SlotDefinition slot) {
+        addSlotToContainer(new SlotItemHandler(
+                inventory,
+                inventoryIndex,
+                slot.getContainerX(),
+                slot.getContainerY()
+        ) {
+            @Override
+            public boolean isItemValid(ItemStack stack) {
+                return false;
+            }
+        }
+        );
+    }
+
+    private void addNormalSlot(IItemHandler inventory, int inventoryIndex, SlotDefinition slot) {
+        addSlotToContainer(new SlotItemHandler(
+                inventory,
+                inventoryIndex,
+                slot.getContainerX(),
+                slot.getContainerY()
+        ));
     }
 
     private void addPlayerInventory(InventoryPlayer playerInventory) {
@@ -140,11 +149,15 @@ public class ContainerFactoryBase extends Container {
         ItemStack stackInSlot = slot.getStack();
         originalStack = stackInSlot.copy();
 
-        int factorySlotCount = tile.getFactory().getSlotData().getAllSlots().length;
+        int factorySlotCount = tile.getFactory().getGui().getSlotData().getSlotCount();
         int playerStart = factorySlotCount;
         int playerEnd = inventorySlots.size();
 
-        List<Integer> inputs = tile.getFactory().getInputSlots();
+        List<Integer> inputs = tile.getFactory().getGui().getSlotData().getSlotIndices(INPUT);
+
+        if (inputs.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
 
         int inputStart = inputs.get(0);
         int inputEnd = inputStart + inputs.size();

@@ -1,6 +1,8 @@
 package com.SprintXXL.primitiveindustry.industryblocks;
 
-public class IndustryBlock {
+import com.sprintxxl.ascenthub.definitions.AscentDefinition;
+
+public class IndustryBlock implements AscentDefinition {
 
     private final String id;
 
@@ -10,6 +12,7 @@ public class IndustryBlock {
         this.id = id;
     }
 
+    @Override
     public String getID() {
         return id;
     }
