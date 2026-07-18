@@ -1,18 +1,20 @@
 package com.SprintXXL.primitiveindustry.factory.base;
 
 import com.SprintXXL.primitiveindustry.factory.Factory;
+import com.SprintXXL.primitiveindustry.factory.recipe.FactoryRecipe;
 import com.SprintXXL.primitiveindustry.factory.recipe.FactoryRecipeMatcher;
 import com.SprintXXL.primitiveindustry.factory.registry.FactoryRegistry;
-import com.SprintXXL.primitiverecipeapi.api.RecipeResourceMatcher;
-import com.SprintXXL.primitiverecipeapi.api.RecipeResourceResolver;
-import com.SprintXXL.primitiverecipeapi.factory.FactoryRecipe;
-import com.SprintXXL.primitiverecipeapi.factory.FactoryRecipeRegistry;
-import com.SprintXXL.primitiverecipeapi.resources.recipe.RecipeResource;
+import com.sprintxxl.ascentresourcerecipeindex.recipes.AscentRecipe;
+import com.sprintxxl.ascentresourcerecipeindex.recipes.api.RecipeResourceMatcher;
+import com.sprintxxl.ascentresourcerecipeindex.recipes.api.RecipeResourceResolver;
+import com.sprintxxl.ascentresourcerecipeindex.recipes.reciperesource.RecipeResource;
+import com.sprintxxl.ascentresourcerecipeindex.recipes.registry.AscentRecipeRegistry;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -29,7 +31,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
     private ItemStackHandler inventory;
     private String factoryID;
     private FactoryRecipe currentRecipe;
-    private String currentRecipeID;
+    private ResourceLocation currentRecipeID;
 
     private int progress = 0;
     private int maxProgress = 0;
@@ -106,7 +108,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
         }
 
         if (currentRecipeID != null) {
-            compound.setString("CurrentRecipeID", currentRecipeID);
+            compound.setString("CurrentRecipeID", currentRecipeID.toString());
         }
 
         compound.setInteger("Progress", progress);
@@ -138,8 +140,10 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
             inventory.deserializeNBT(compound.getCompoundTag("Inventory"));
         }
 
-        if (compound.hasKey("CurrentRecipeID")) {
-            currentRecipeID = compound.getString("CurrentRecipeID");
+        String savedRecipeID = compound.getString("CurrentRecipeID");
+
+        if (!savedRecipeID.isEmpty()) {
+            currentRecipeID = new ResourceLocation(savedRecipeID);
         }
 
         progress = compound.getInteger("Progress");
@@ -381,13 +385,16 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
             return;
         }
 
-        currentRecipe = FactoryRecipeRegistry.getRecipe(currentRecipeID);
+        AscentRecipe recipe = AscentRecipeRegistry.getRecipe(currentRecipeID);
 
-        if (currentRecipe == null) {
-            currentRecipeID = null;
-            progress = 0;
-            maxProgress = 0;
+        if (recipe instanceof FactoryRecipe) {
+            currentRecipe = (FactoryRecipe) recipe;
+            return;
         }
+
+        currentRecipeID = null;
+        progress = 0;
+        maxProgress = 0;
     }
 
     private void updateActiveBlockState() {
@@ -424,7 +431,7 @@ public class TileEntityFactoryBase extends TileEntity implements ITickable {
         consumeInputs(factory, recipe);
 
         currentRecipe = recipe;
-        currentRecipeID = recipe.getRecipeID();
+        currentRecipeID = recipe.getID();
         maxProgress = recipe.getDurationTicks();
         progress = 0;
 

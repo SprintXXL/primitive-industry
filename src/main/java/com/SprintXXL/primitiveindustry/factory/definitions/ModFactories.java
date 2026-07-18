@@ -1,7 +1,6 @@
 package com.SprintXXL.primitiveindustry.factory.definitions;
 
 import com.SprintXXL.primitiveindustry.factory.Factory;
-import com.SprintXXL.primitiverecipeapi.factory.FactoryIDs;
 import com.sprintxxl.ascenthub.definitions.DefinitionRegistrar;
 import com.sprintxxl.ascenthub.framework.gui.AscentGUI;
 import com.sprintxxl.ascenthub.framework.gui.cosmetic.CosmeticData;
@@ -22,7 +21,7 @@ public final class ModFactories {
 
     private ModFactories(){}
 
-    public static void registerFactoryDefinitions(DefinitionRegistrar<Factory> registrar) {
+    public static void initFactoryDefinitions(DefinitionRegistrar<Factory> registrar) {
 
         // TEST \\
         registrar.register(TEST_FACTORY);

@@ -1,9 +1,8 @@
 package com.SprintXXL.primitiveindustry.factory.recipe;
 
-import com.SprintXXL.primitiverecipeapi.api.RecipeResourceMatcher;
-import com.SprintXXL.primitiverecipeapi.factory.FactoryRecipe;
-import com.SprintXXL.primitiverecipeapi.factory.FactoryRecipeRegistry;
-import com.SprintXXL.primitiverecipeapi.resources.recipe.RecipeResource;
+import com.sprintxxl.ascentresourcerecipeindex.recipes.api.RecipeResourceMatcher;
+import com.sprintxxl.ascentresourcerecipeindex.recipes.reciperesource.RecipeResource;
+import com.sprintxxl.ascentresourcerecipeindex.recipes.registry.AscentRecipeRegistry;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class FactoryRecipeMatcher {
             return null;
         }
 
-        for (FactoryRecipe recipe : FactoryRecipeRegistry.getAllRecipes()) {
+        for (FactoryRecipe recipe : AscentRecipeRegistry.getRecipes(FactoryRecipe.class)) {
 
             if (!factoryID.equals(recipe.getFactoryID())) {
                 continue;

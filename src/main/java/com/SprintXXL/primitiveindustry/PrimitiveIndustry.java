@@ -11,6 +11,8 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import static com.SprintXXL.primitiveindustry.Reference.*;
+import static com.SprintXXL.primitiveindustry.ascent.IndustryDefinitionProvider.initIndustryDefinitionProvider;
+import static com.SprintXXL.primitiveindustry.ascent.IndustryRecipes.initIndustryRecipes;
 import static com.SprintXXL.primitiveindustry.factory.registry.FactoryRegistry.initFactoryRegistry;
 import static com.SprintXXL.primitiveindustry.industryblocks.registry.IndustryBlockRegistry.initIndustryBlockRegistry;
 
@@ -25,6 +27,12 @@ public class PrimitiveIndustry {
 
         initIndustryBlockRegistry();
         initFactoryRegistry();
+
+        // ARRI \\
+        initIndustryRecipes();
+
+        // HUB \\
+        initIndustryDefinitionProvider();
     }
 
     @Mod.EventHandler

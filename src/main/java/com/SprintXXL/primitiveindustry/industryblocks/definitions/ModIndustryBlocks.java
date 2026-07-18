@@ -7,7 +7,7 @@ public class ModIndustryBlocks {
 
     private ModIndustryBlocks() {}
 
-    public static void registerIndustryBlockDefinitions(DefinitionRegistrar<IndustryBlock> registrar) {
+    public static void initIndustryBlockDefinitions(DefinitionRegistrar<IndustryBlock> registrar) {
 
         registrar.register(COKE_OVEN_BRICK);
 

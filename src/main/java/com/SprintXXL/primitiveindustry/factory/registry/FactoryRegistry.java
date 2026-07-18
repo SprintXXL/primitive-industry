@@ -6,7 +6,7 @@ import net.minecraft.block.Block;
 
 import java.util.*;
 
-import static com.SprintXXL.primitiveindustry.factory.definitions.ModFactories.registerFactoryDefinitions;
+import static com.SprintXXL.primitiveindustry.factory.definitions.ModFactories.initFactoryDefinitions;
 
 public class FactoryRegistry {
 
@@ -22,7 +22,7 @@ public class FactoryRegistry {
 
         initialized = true;
 
-        registerFactoryDefinitions(FactoryRegistry::register);
+        initFactoryDefinitions(FactoryRegistry::register);
         createBlocks();
     }
 
